@@ -14,15 +14,20 @@ totalLen = len(data)
 result = []
 
 def findSubArray(data, left, right):
+
 	if (left == right): 
-		return data[left]
+		return data[left], left, right
 
 	middle = (left+right)/2
-	leftres = findSubArray(data, left, middle)
-	rightres = findSubArray(data, middle+1, right)	
+	leftres, _ , _ = findSubArray(data, left, middle)
+	rightres, _ , _ = findSubArray(data, middle+1, right)	
 	
 	leftmax = data[middle]
 	rightmax = data[middle+1]
+	
+	indx = middle	
+	endx = middle+1
+	
 	temp = 0
 	
 	for i in range(middle, left-1, -1):
@@ -30,6 +35,7 @@ def findSubArray(data, left, right):
 
 		if(temp > leftmax):
 			leftmax = temp
+			indx = i
 	
 	temp = 0
 	for i in range(middle+1, right):
@@ -37,18 +43,22 @@ def findSubArray(data, left, right):
 		
 		if(temp > rightmax):
 			rightmax = temp
+			endx = i
+	
+	maxSum =  max(max(leftres, rightres), leftmax+rightmax)
+	
+	return maxSum, indx, endx
 
-	return max(max(leftres, rightres), leftmax+rightmax)
+maxSum, begin, final = findSubArray(data, 0, totalLen-1)
 
-maxSum = findSubArray(data, 0, totalLen-1)
-
+result = data[begin:final+1]
 resultLen = len(result)
 result = map(str, result)
 
 with open("MSS_Results.txt", "w") as f:
 	f.write(' '.join(result))
 	f.write('\n')
-	f.write("Sum is %d" % maxSum)
+	f.write("Sum is " + str(maxSum))
 
 stop = datetime.now()
 
